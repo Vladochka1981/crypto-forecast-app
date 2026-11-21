@@ -16,7 +16,7 @@ RUN mkdir -p /app/data && chmod -R 777 /app/data
 RUN useradd -m -u 1000 user
 USER user
 
-EXPOSE 10000
+EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8000}/dashboard || exit 1
