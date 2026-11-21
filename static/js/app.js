@@ -557,12 +557,16 @@ async function loadDashboard() {
             }
         };
 
-        document.getElementById('status-body').innerHTML = `
+       document.getElementById('status-body').innerHTML = `
             <div class="status-cell"><span class="status-label">F&amp;G:</span> ${badge(fngSt.status)} <span class="dash-muted">${fngSt.age_seconds != null ? Math.round(fngSt.age_seconds) + 's' : ''}</span></div>
             <div class="status-cell"><span class="status-label">Price:</span> ${badge(priceSt.status)} <span class="dash-muted">${priceSt.age_seconds != null ? Math.round(priceSt.age_seconds) + 's' : ''}</span></div>
             <div class="status-cell"><span class="status-label">Onchain:</span> ${badge(onchainSt.status)} <span class="dash-muted">${fmtShort(onchainSt.last_date)}</span></div>
-            <div class="status-cell"><span class="status-label">Macro:</span> ${badge(macroSt.status)} <span class="dash-muted">${fmtShort(macroSt.last_date)}</span></div>
-            <div class="status-cell status-retrain">Переобучение: <b>${fmtShort(d.last_retrain) || '—'}</b></div>`;
+            <div class="status-cell"><span class="status-label">Macro:</span> ${badge(macroSt.status)} <span class="dash-muted">${fmtShort(macroSt.last_date)}</span></div>`;
+        
+        const retrainEl = document.getElementById('last-retrain-date');
+        if (retrainEl) {
+            retrainEl.textContent = fmtShort(d.last_retrain) || '—';
+        }
 
         // Warnings (плашки)
         const warns = d.warnings || [];
@@ -684,7 +688,7 @@ async function loadComparison() {
         const r = await fetch(`/comparison?model=${fetchModel}`);
         const d = await r.json();
         if (d.error) {
-            el.innerHTML = `<div class="dash-muted">Последнее переобучение ещё не было</div>`;
+            el.innerHTML = `<div class="dash-muted">Переобучения ещё не было</div>`;
             return;
         }
         const dec = d.decision === 'promote' ? '✅ promote' : '⏸ keep';
@@ -756,6 +760,38 @@ async function loadVersions() {
     } catch (e) {
         console.error('loadVersions:', e);
     }
+}
+
+async function triggerRetrain() {
+    const btn = document.getElementById('btn-retrain');
+    const status = document.getElementById('retrain-status');
+    btn.disabled = true;
+    status.textContent = 'Запуск...';
+    status.style.color = '#666';
+    
+    try {
+        const resp = await fetch('/retrain', { method: 'POST' });
+        const data = await resp.json();
+        if (resp.ok) {
+            status.textContent = '⏳ Переобучение запущено (смотрите логи)';
+            status.style.color = 'orange';
+        } else if (resp.status === 409) {
+            status.textContent = '⏳ Переобучение уже идёт';
+            status.style.color = 'orange';
+        } else {
+            status.textContent = '❌ Ошибка: ' + (data.error || 'неизвестно');
+            status.style.color = 'red';
+        }
+    } catch (e) {
+        status.textContent = '❌ Ошибка сети';
+        status.style.color = 'red';
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+function exportCsv() {
+    window.location.href = '/export_predictions';
 }
 
 window.addEventListener('load', () => {

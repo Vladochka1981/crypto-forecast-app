@@ -10,6 +10,10 @@ from fastapi.templating import Jinja2Templates
 from app.core.config import settings
 from app.services.orchestrator import orchestrator
 
+from fastapi.responses import StreamingResponse
+import io
+import csv
+
 logger = logging.getLogger(__name__)
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -28,7 +32,6 @@ def _sanitize_nan(obj):
 
 @router.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    """Отдаёт главную страницу приложения с формой прогноза."""
     return templates.TemplateResponse(
         request=request, name="index.html", context={},
     )
@@ -36,16 +39,6 @@ def index(request: Request):
 
 @router.get("/predict")
 async def predict(horizon: int = 6, model: str = "attention_gru", version: str | None = None):
-    """
-    Возвращает точечный прогноз цены биткойна/USD на заданный горизонт.
-
-    Используется указанная модель (attention_gru или arimax_lstm);
-    если версия не передана — берётся последняя активная из таблицы model_versions.
-    Прогноз сопровождается адаптивными доверительными интервалами (ACI).
-
-    Возвращает JSON с прогнозом и служебной информацией.
-    При внутренней ошибке — 500 с полем "error".
-    """    
     try:
         result = await orchestrator.predict(horizon=horizon, model=model, version=version)
         encoded = jsonable_encoder(result)
@@ -58,13 +51,6 @@ async def predict(horizon: int = 6, model: str = "attention_gru", version: str |
     
 @router.get("/dashboard")
 async def dashboard():
-    """
-    Возвращает JSON с агрегированными данными для дашборда:
-    текущие прогнозы активных моделей, историю цен и сводку метрик.
-
-    Используется главной страницей для отрисовки графиков.
-    При внутренней ошибке — 500 с полем "error".
-    """
     try:
         data = await orchestrator.get_dashboard()
         return JSONResponse(_sanitize_nan(jsonable_encoder(data)))
@@ -74,13 +60,6 @@ async def dashboard():
     
 @router.get("/metrics")
 async def metrics():
-    """
-    Возвращает метрики качества моделей (MAE, RMSE, MAPE и др.)
-    по последним доступным версиям.
-
-    Источник — данные обучения и история метрик из data/metrics_history.
-    При внутренней ошибке — 500 с полем "error".
-    """
     try:
         data = await orchestrator.get_metrics()
         return JSONResponse(_sanitize_nan(jsonable_encoder(data)))
@@ -90,13 +69,6 @@ async def metrics():
     
 @router.get("/predict_all")
 async def predict_all(model: str = "attention_gru", version: str | None = None):
-    """
-    Возвращает прогнозы указанной модели сразу по всем горизонтам
-    (1, 3, 6, 12, 18 часов) — для сравнения динамики на разных сроках.
-
-    Если версия не передана, используется последняя активная версия модели.
-    При внутренней ошибке — 500 с полем "error".
-    """
     try:
         result = await orchestrator.predict_all_horizons(model=model, version=version)
         return JSONResponse(_sanitize_nan(jsonable_encoder(result)))
@@ -157,17 +129,6 @@ def comparison(model: str = "attention_gru"):
     
 @router.get("/debug_cache")
 def debug_cache():
-    """
-    Отладочный эндпоинт: возвращает текущее состояние кэша внешних данных
-    (цены с Binance и др.).
-
-    В ответе:
-    - price_status — статус последней загрузки цен ("ok" / "error" и т. п.);
-    - price_age — возраст данных кэша в секундах;
-    - memory_keys — список ключей, хранящихся в кэше в памяти;
-    - memory_timestamps — временные метки каждого ключа.
-    
-    """
     from app.services.cache_manager import cache_manager
     return JSONResponse({
         "price_status": cache_manager.last_status("price"),
@@ -188,3 +149,60 @@ def backtest(model: str = "attention_gru", version: str | None = None):
     if not bt_path.exists():
         return JSONResponse({"error": "backtest.json не найден"}, status_code=404)
     return JSONResponse(json.loads(bt_path.read_text(encoding="utf-8")))
+
+_retrain_task = None
+
+@router.post("/retrain")
+async def trigger_retrain(model: str = "all"):
+    global _retrain_task
+    if _retrain_task and not _retrain_task.done():
+        return JSONResponse({"status": "already_running", "message": "Переобучение уже идёт"}, status_code=409)
+
+    from app.services.scheduler import _retrain_weekly_async
+    import asyncio
+
+    async def run_retrain():
+        try:
+            await _retrain_weekly_async()
+            logger.info("Ручное переобучение завершено")
+        except Exception as e:
+            logger.exception("Ошибка при ручном переобучении: %s", e)
+
+    _retrain_task = asyncio.create_task(run_retrain())
+    return JSONResponse({"status": "started", "message": "Переобучение запущено"})
+
+@router.get("/export_predictions")
+async def export_predictions():
+    """
+    Выгружает все предсказания из БД в CSV.
+    """
+    # Получаем данные из БД (нужно узнать, как они называются)
+    # Предположим, у тебя есть метод get_all_predictions()
+    # Если нет — используй SQL-запрос через db_repository
+    from app.services.database_repository import db_repository
+
+    async with db_repository._connect() as conn:
+        rows = await db_repository._fetchall(
+            conn, "SELECT * FROM predictions ORDER BY created_at DESC"
+        )
+
+    # Формируем CSV в памяти
+    output = io.StringIO()
+    writer = csv.writer(output, delimiter=';')  # ; — чтобы Excel правильно открывал русский
+
+    # Заголовки
+    if rows:
+        headers = list(rows[0].keys())
+        writer.writerow(headers)
+        for row in rows:
+            writer.writerow([row[h] for h in headers])
+    else:
+        writer.writerow(["Нет данных"])
+
+    output.seek(0)
+    
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=predictions.csv"}
+    )

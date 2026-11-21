@@ -86,11 +86,34 @@
             
          </div>
     </div>
+
     <!-- ===== Data status (внизу, горизонтально) ===== -->
-    <div class="card card-status-bottom">
+    <div class="card card-status-bottom" style="display: flex; flex-direction: column;">
         <h3>Data status</h3>
-        <div id="status-body" class="status-grid">Загрузка...</div>
-        <div id="warnings-body" class="warnings"></div>
+        
+        <!-- Контейнер для статусов и кнопок в один ряд -->
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap; gap: 15px; width: 100%;">
+            
+            <!-- Сами статусы данных -->
+            <div id="status-body" class="status-grid" style="display: flex; align-items: center; justify-content: space-around; gap: 15px; flex-grow: 1;">Загрузка...</div>
+            
+            <!-- Плашка переобучения -->
+            <div style="flex-shrink: 0; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 6px 12px; font-size: 0.85em; color: #495057;">
+                Последнее переобучение: <b id="last-retrain-date">—</b>
+            </div>
+            <!-- Блок с кнопками -->
+            <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+                <button id="btn-retrain" class="btn btn-sm btn-warning" onclick="triggerRetrain()" style="white-space: nowrap; background-color: #ff9800; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+                    🔄 Переобучить (3 часа)
+                </button>
+                <button id="btn-export" onclick="exportCsv()" style="white-space: nowrap; background-color: #2196f3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+                    📥 Скачать CSV
+                </button>
+                <span id="retrain-status" style="font-size: 0.85em; color: #666; white-space: nowrap;"></span>
+            </div>
+        </div>
+
+        <div id="warnings-body" class="warnings" style="margin-top: 10px;"></div>
     </div>
 
     <script src="/static/js/app.js"></script>
