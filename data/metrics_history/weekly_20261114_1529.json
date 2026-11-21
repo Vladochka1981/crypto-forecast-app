@@ -1,0 +1,6 @@
+[
+  {
+    "model": "arimax_lstm",
+    "dry_run": true
+  }
+]

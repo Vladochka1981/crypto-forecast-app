@@ -1,0 +1,10 @@
+[
+  {
+    "model": "attention_gru",
+    "dry_run": true
+  },
+  {
+    "model": "arimax_lstm",
+    "dry_run": true
+  }
+]

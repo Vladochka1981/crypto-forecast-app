@@ -1,0 +1,30 @@
+{
+  "model": "ARIMA(4,1,5) + per-horizon LSTM",
+  "arima_order": [
+    4,
+    1,
+    5
+  ],
+  "seasonal_order": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "horizons": [
+    1,
+    3,
+    6,
+    12,
+    18
+  ],
+  "lookback_lstm": 30,
+  "lstm_units": 64,
+  "lstm_dropout": 0.4,
+  "trained_on": "train_arima + train_lstm (2020-2024)",
+  "lstm_trained_on": "residuals from ARIMA walk-forward on val (2025)",
+  "exog_assumption": "persistence (X(t) frozen for all future steps)",
+  "anchor": "close(t)",
+  "walk_forward": "ARIMA state updated after each t",
+  "date": "2026-10-04"
+}

@@ -1,0 +1,327 @@
+/* ============================================================
+   БАЗА
+   ============================================================ */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+    background: #f5f7fa;
+    color: #1a1a2e;
+}
+h1 { color: #16213e; }
+label { display: block; margin-bottom: 8px; font-weight: 600; }
+
+select, button {
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+button {
+    background: #0f3460;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+button:hover { background: #16213e; }
+button:disabled { background: #6c7a89; cursor: wait; }
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.summary {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #eef2f7;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* ============================================================
+   УПРАВЛЕНИЕ (горизонтально)
+   ============================================================ */
+.card-control-horizontal {
+    margin-bottom: 16px;
+    padding: 16px 20px;
+}
+.controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+}
+.control-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.control-item label {
+    font-size: 12px;
+    color: #555;
+    margin: 0;
+}
+.control-item select,
+.control-item button {
+    margin: 0;
+    min-width: 160px;
+}
+.summary-item {
+    flex: 1;
+    min-width: 200px;
+}
+.summary-item .summary {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+/* ============================================================
+   ОСНОВНОЙ LAYOUT: Model quality | График | 3 карточки
+   ============================================================ */
+.main-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr 240px;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: stretch;
+}
+.main-layout > .card {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+/* Model quality — своей высоты (не растягивать) */
+.main-layout > .card-quality {
+    align-self: start;
+}
+.main-layout > .card-quality .dash-body {
+    flex: 0 0 auto;
+}
+
+/* График */
+.chart-panel {
+    display: flex;
+    flex-direction: column;
+}
+.chart-panel #chart {
+    height: 380px;
+    flex: 0 0 380px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.chart-panel #macd-chart {
+    height: 90px;
+    margin-top: 6px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.chart-panel #volume-chart {
+    height: 70px;
+    margin-top: 6px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Правая колонка — стёком, растянута на высоту графика */
+.right-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+}
+.right-cards > .card {
+    margin-bottom: 0;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+.right-cards > .card-fng { min-height: 180px; }
+.right-cards > .card-price { min-height: 100px; }
+.right-cards > .card-signal { flex: 1 1 auto; }
+.right-cards > .card-signal .dash-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* ============================================================
+   MODEL QUALITY
+   ============================================================ */
+.card-quality .mq-model { margin-bottom: 12px; }
+.card-quality .mq-model b { font-size: 14px; }
+.card-quality .mq-meta { color: #888; font-size: 11px; margin-left: 6px; }
+.card-quality .mq-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 6px;
+}
+.card-quality .mq-table th,
+.card-quality .mq-table td {
+    padding: 2px 4px;
+    text-align: right;
+    border-bottom: 1px solid #eee;
+}
+.card-quality .mq-table th { font-weight: 600; color: #555; }
+.warn { color: #c00; font-size: 12px; }
+
+/* Comparison */
+.comparison {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+}
+.comp-title { font-weight: 600; margin-bottom: 6px; color: #16213e; }
+.comp-row { margin-bottom: 4px; line-height: 1.35; }
+
+/* ============================================================
+   FORECAST CARDS (всегда 5 в ряд)
+   ============================================================ */
+#forecast-result {
+    margin-top: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.forecast-cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+.fc-card {
+    padding: 8px 6px;
+    min-width: 0;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: #fafafa;
+}
+.fc-h { font-size: 11px; color: #888; font-weight: 600; }
+.fc-price { font-size: 14px; font-weight: 700; margin-top: 2px; }
+.fc-range { font-size: 9px; color: #666; margin-top: 2px; }
+.fc-diff { font-size: 11px; font-weight: 600; margin-top: 4px; }
+.fc-diff.up { color: #16a34a; }
+.fc-diff.down { color: #dc2626; }
+.fc-diff.flat { color: #666; }
+.fc-group { margin-bottom: 16px; }
+.fc-group h4 { margin: 8px 0; font-size: 13px; color: #555; }
+.fc-loading { color: #888; font-size: 13px; }
+
+/* ============================================================
+   F&G, PRICE, STATUS
+   ============================================================ */
+.fng-value { font-size: 32px; font-weight: 700; line-height: 1; }
+.fng-label { font-size: 14px; font-weight: 600; color: #2563eb; margin-top: 2px; }
+.fng-date { font-size: 11px; color: #999; margin-top: 2px; }
+
+.price-last { font-size: 28px; font-weight: 700; }
+.price-delta { font-size: 14px; font-weight: 600; }
+.price-delta.up { color: #16a34a; }
+.price-delta.down { color: #dc2626; }
+.price-delta.flat { color: #666; }
+.price-date { font-size: 11px; color: #999; margin-top: 4px; }
+
+.badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.badge.live { background: #dcfce7; color: #166534; }
+.badge.cache { background: #fef9c3; color: #854d0e; }
+.badge.stale { background: #fee2e2; color: #991b1b; }
+.badge.unknown { background: #e5e7eb; color: #374151; }
+
+.dash-muted { color: #999; font-size: 11px; margin-left: 4px; }
+.last-retrain {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #555;
+    border-top: 1px solid #eee;
+    padding-top: 8px;
+}
+.last-retrain b { color: #222; }
+.warnings { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.warn-badge {
+    background: #fef3c7;
+    color: #92400e;
+    border-left: 4px solid #f59e0b;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+/* ============================================================
+   TRADING SIGNAL
+   ============================================================ */
+.signal-row {
+    display: flex; justify-content: space-between;
+    padding: 4px 0; border-bottom: 1px solid #eee;
+    font-size: 12px;
+}
+.signal-row:last-child { border-bottom: none; }
+.signal-badge {
+    padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 11px;
+}
+.signal-badge.buy { background: #dcfce7; color: #166534; }
+.signal-badge.sell { background: #fee2e2; color: #991b1b; }
+.signal-badge.hold { background: #f3f4f6; color: #6b7280; }
+.signal-h { font-weight: 600; color: #555; }
+.signal-exp { color: #888; font-size: 10px; }
+.signal-model { font-weight: 600; margin: 8px 0 4px; font-size: 12px; color: #16213e; }
+
+/* ============================================================
+   BACKTEST
+   ============================================================ */
+.backtest { margin-top: 16px; padding-top: 12px; border-top: 1px solid #eee; font-size: 12px; }
+.bt-title { font-weight: 700; margin: 10px 0 6px; font-size: 13px; color: #16213e; }
+.bt-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 6px; }
+.bt-table th, .bt-table td { padding: 2px 4px; text-align: right; border-bottom: 1px solid #eee; }
+.bt-table th { font-weight: 600; color: #555; }
+.bt-table td.up { color: #16a34a; font-weight: 600; }
+.bt-table td.down { color: #dc2626; font-weight: 600; }
+.bt-bh { margin-top: 6px; font-size: 11px; color: #555; }
+
+/* ============================================================
+   DATA STATUS (внизу, горизонтально)
+   ============================================================ */
+.card-status-bottom {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding: 14px 20px;
+}
+.card-status-bottom h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+}
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px 24px;
+    font-size: 13px;
+}
+.status-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.status-label {
+    font-weight: 600;
+    color: #555;
+    font-size: 12px;
+}
+.status-retrain {
+    grid-column: 1 / -1;
+    border-top: 1px solid #eee;
+    padding-top: 8px;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #555;
+}
+.status-retrain b { color: #222; }
+@media (max-width: 900px) {
+    .status-grid { grid-template-columns: repeat(2, 1fr); }
+}

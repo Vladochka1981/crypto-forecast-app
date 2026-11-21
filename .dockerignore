@@ -1,0 +1,16 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+data/models/*/archive/
+data/models/*/deploy/*.pkl
+data/models/*/deploy/*.keras
+data/cache/
+data/eval_viz/
+data/*.db
+data/*.db.bak*
+.env
+.vscode/
+.idea/

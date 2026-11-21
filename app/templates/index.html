@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Forecast App</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/lightweight-charts.standalone.production.js"></script>
+    <link rel="icon" href="data:,">
+</head>
+<body>
+    <h1>Crypto Forecast App</h1>
+    <p>Прогнозирование курса Bitcoin с помощью Attention-GRU и ARIMAX-LSTM.</p>
+
+    <!-- ===== Управление (горизонтально) ===== -->
+    <div class="card card-control-horizontal">
+        <div class="controls-row">
+            <div class="control-item">
+                <label for="model">Модель:</label>
+                <select id="model">
+                    <option value="attention_gru">Attention-GRU</option>
+                    <option value="arimax_lstm">ARIMAX-LSTM</option>
+                    <option value="auto">Обе модели</option>
+                </select>
+            </div>
+            <div class="control-item">
+                <label for="model-version">Версия:</label>
+                <select id="model-version">
+                    <option value="">Текущая (deploy)</option>
+                </select>
+            </div>
+            <div class="control-item">
+                <label for="horizon">Горизонт:</label>
+                <select id="horizon">
+                    <option value="1">4 часа (h=1)</option>
+                    <option value="3">12 часов (h=3)</option>
+                    <option value="6">24 часа (h=6)</option>
+                    <option value="12">48 часов (h=12)</option>
+                    <option value="18">72 часа (h=18)</option>
+                    <option value="all" selected>Все горизонты</option>
+                </select>
+            </div>
+            <div class="control-item">
+                <button id="btn-forecast" onclick="runForecast()">Запустить прогноз</button>
+            </div>
+            <div class="control-item summary-item">
+                <div id="summary" class="summary" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Основной блок: Model quality | График | 3 карточки ===== -->
+    <div class="main-layout">
+        <!-- Model quality (вертикально) -->
+        <div class="card card-quality">
+            <h3>Model quality</h3>
+            <div id="model-quality-body" class="dash-body">Загрузка...</div>
+            <div id="backtest-body" class="backtest"></div>
+            <div id="comparison-body" class="comparison"></div>
+            
+        </div>
+
+        <!-- График -->
+        <div class="card chart-panel">
+            <h3>График</h3>
+            <div id="chart"></div>
+            <div id="macd-chart"></div>
+            <div id="volume-chart"></div>
+            <div id="forecast-result"></div>
+        </div>
+
+        <!-- 3 карточки стёком -->
+        <div class="right-cards">
+            <div class="card card-fng">
+                <h3>Fear &amp; Greed</h3>
+                <div id="fng-body" class="dash-body" style="text-align:center;">Загрузка...</div>
+            </div>
+            <div class="card card-price">
+                <h3>BTC / USD</h3>
+                <div id="price-body" class="dash-body">Загрузка...</div>
+            </div>
+            <div class="card card-signal">
+                <h3>Trading Signal</h3>
+                <div id="signal-body" class="dash-body">Загрузка...</div>
+            </div>
+            
+         </div>
+    </div>
+    <!-- ===== Data status (внизу, горизонтально) ===== -->
+    <div class="card card-status-bottom">
+        <h3>Data status</h3>
+        <div id="status-body" class="status-grid">Загрузка...</div>
+        <div id="warnings-body" class="warnings"></div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

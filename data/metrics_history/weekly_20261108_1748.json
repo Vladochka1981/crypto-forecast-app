@@ -1,0 +1,10 @@
+[
+  {
+    "model": "attention_gru",
+    "error": "name 'now' is not defined"
+  },
+  {
+    "model": "arimax_lstm",
+    "error": "ARIMAX: мало val после dropna: 30"
+  }
+]

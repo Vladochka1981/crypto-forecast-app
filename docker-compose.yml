@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: crypto-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-crypto}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-crypto}
+      POSTGRES_DB: ${POSTGRES_DB:-crypto}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init_postgres.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-crypto} -d $${POSTGRES_DB:-crypto}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: crypto-app
+    env_file: [.env]
+    environment:
+      DB_URL: postgresql://${POSTGRES_USER:-crypto}:${POSTGRES_PASSWORD:-crypto}@postgres:5432/${POSTGRES_DB:-crypto}
+    ports: ["8000:8000"]
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: crypto-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    profiles:
+      - tools
+
+volumes:
+  pgdata:

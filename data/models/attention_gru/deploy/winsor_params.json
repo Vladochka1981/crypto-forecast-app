@@ -1,0 +1,43 @@
+{
+  "open": {
+    "method": "zscore",
+    "window": 30,
+    "threshold": 3.5
+  },
+  "high": {
+    "method": "zscore",
+    "window": 30,
+    "threshold": 3.5
+  },
+  "low": {
+    "method": "zscore",
+    "window": 30,
+    "threshold": 3.5
+  },
+  "hash_rate": {
+    "method": "zscore",
+    "window": 30,
+    "threshold": 3.5
+  },
+  "n_tx": {
+    "method": "zscore",
+    "window": 30,
+    "threshold": 3.5
+  },
+  "trade_volume_btc": {
+    "method": "zscore",
+    "window": 30,
+    "threshold": 3.5
+  },
+  "miners_revenue_btc": {
+    "method": "zscore",
+    "window": 30,
+    "threshold": 3.5
+  },
+  "volume": {
+    "method": "iqr",
+    "k": 3.0,
+    "q1": 4102.31163,
+    "q3": 14248.433046
+  }
+}

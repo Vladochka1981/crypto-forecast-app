@@ -1,0 +1,71 @@
+{
+  "model": "attention_gru",
+  "computed_at": "2026-11-15T11:37:08.591806+00:00",
+  "horizons": {
+    "1": {
+      "theta_long": 0.006,
+      "theta_short": 0.004,
+      "sharpe": -12.681826653343252,
+      "total_return": -0.5439651761170333,
+      "max_drawdown": -0.5469403854506859,
+      "win_rate": 0.21739130434782608,
+      "n_trades": 184,
+      "n_long": 32,
+      "n_short": 152,
+      "buy_hold_return": 0.14854184063684217,
+      "buy_hold_sharpe": 1.4115807049954447
+    },
+    "3": {
+      "theta_long": 0.006,
+      "theta_short": 0.007,
+      "sharpe": -6.42976994586243,
+      "total_return": -0.4183572286553193,
+      "max_drawdown": -0.42910953315087985,
+      "win_rate": 0.33088235294117646,
+      "n_trades": 136,
+      "n_long": 51,
+      "n_short": 85,
+      "buy_hold_return": 0.14854184063684217,
+      "buy_hold_sharpe": 1.4115807049954447
+    },
+    "6": {
+      "theta_long": 0.008,
+      "theta_short": 0.008,
+      "sharpe": -4.9929054872639655,
+      "total_return": -0.44456072079649434,
+      "max_drawdown": -0.4593813571156762,
+      "win_rate": 0.3,
+      "n_trades": 90,
+      "n_long": 34,
+      "n_short": 56,
+      "buy_hold_return": 0.14854184063684217,
+      "buy_hold_sharpe": 1.4115807049954447
+    },
+    "12": {
+      "theta_long": 0.007,
+      "theta_short": 0.014,
+      "sharpe": -2.7733816071775093,
+      "total_return": -0.27746641453525367,
+      "max_drawdown": -0.3696084860802997,
+      "win_rate": 0.3269230769230769,
+      "n_trades": 52,
+      "n_long": 19,
+      "n_short": 33,
+      "buy_hold_return": 0.14854184063684217,
+      "buy_hold_sharpe": 1.4115807049954447
+    },
+    "18": {
+      "theta_long": 0.019,
+      "theta_short": 0.029,
+      "sharpe": -3.3750594296369156,
+      "total_return": -0.3661451941067163,
+      "max_drawdown": -0.385432884081934,
+      "win_rate": 0.3225806451612903,
+      "n_trades": 31,
+      "n_long": 11,
+      "n_short": 20,
+      "buy_hold_return": 0.14854184063684217,
+      "buy_hold_sharpe": 1.4115807049954447
+    }
+  }
+}

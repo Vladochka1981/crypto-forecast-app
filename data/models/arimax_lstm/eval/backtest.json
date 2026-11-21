@@ -1,0 +1,71 @@
+{
+  "model": "arimax_lstm",
+  "computed_at": "2026-11-15T13:18:50.849995+00:00",
+  "horizons": {
+    "1": {
+      "theta_long": 0.005,
+      "theta_short": 0.004,
+      "sharpe": -2.481811285041527,
+      "total_return": -0.0011909003273352647,
+      "max_drawdown": -0.0014586032164995988,
+      "win_rate": 0.2,
+      "n_trades": 5,
+      "n_long": 2,
+      "n_short": 3,
+      "buy_hold_return": 0.13663297403495012,
+      "buy_hold_sharpe": 1.3170683530804828
+    },
+    "3": {
+      "theta_long": 0.013000000000000001,
+      "theta_short": 0.01,
+      "sharpe": 4.481357227148332,
+      "total_return": 0.07415631371632436,
+      "max_drawdown": -0.004211388309307673,
+      "win_rate": 0.6567164179104478,
+      "n_trades": 67,
+      "n_long": 22,
+      "n_short": 45,
+      "buy_hold_return": 0.13663297403495012,
+      "buy_hold_sharpe": 1.3170683530804828
+    },
+    "6": {
+      "theta_long": 0.012,
+      "theta_short": 0.021,
+      "sharpe": 2.104742822295631,
+      "total_return": 0.06208278059996286,
+      "max_drawdown": -0.01836062305089503,
+      "win_rate": 0.5102040816326531,
+      "n_trades": 49,
+      "n_long": 30,
+      "n_short": 19,
+      "buy_hold_return": 0.13663297403495012,
+      "buy_hold_sharpe": 1.3170683530804828
+    },
+    "12": {
+      "theta_long": 0.002,
+      "theta_short": 0.027,
+      "sharpe": -2.1307660444487126,
+      "total_return": -0.025953542033760657,
+      "max_drawdown": -0.0383058511959814,
+      "win_rate": 0.3958333333333333,
+      "n_trades": 48,
+      "n_long": 38,
+      "n_short": 10,
+      "buy_hold_return": 0.13663297403495012,
+      "buy_hold_sharpe": 1.3170683530804828
+    },
+    "18": {
+      "theta_long": 0.028,
+      "theta_short": 0.019,
+      "sharpe": 2.3535436601807813,
+      "total_return": 0.09907891474667574,
+      "max_drawdown": -0.005694689211348636,
+      "win_rate": 0.6521739130434783,
+      "n_trades": 23,
+      "n_long": 8,
+      "n_short": 15,
+      "buy_hold_return": 0.13663297403495012,
+      "buy_hold_sharpe": 1.3170683530804828
+    }
+  }
+}
