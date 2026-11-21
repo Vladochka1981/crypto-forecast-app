@@ -10,9 +10,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8000
+# создаём data-каталог до смены пользователя, чтобы приложение могло туда писать
+RUN mkdir -p /app/data && chmod -R 777 /app/data
+
+RUN useradd -m -u 1000 user
+USER user
+
+EXPOSE 10000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
-    CMD curl -f http://localhost:8000/dashboard || exit 1
+    CMD curl -f http://localhost:${PORT:-8000}/dashboard || exit 1
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]
